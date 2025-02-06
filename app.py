@@ -1,6 +1,7 @@
 import os
 import io
 import sys
+import time
 from flask import send_file
 from flask import Flask, session, render_template, request, redirect, url_for, flash, jsonify, Response
 from flask_bcrypt import Bcrypt
@@ -10,6 +11,7 @@ from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import scoped_session, sessionmaker
 import datetime
 import xlwt
+import pyotp
 from fpdf import FPDF
 from sqlalchemy import text
 
@@ -265,8 +267,27 @@ def delaccount():
             flash(f'Account with id : {acc_id} is not present in database.','warning')
     return render_template('delaccount.html', delaccount=True)
 
-@app.route("/viewaccount" , methods=["GET", "POST"])
-def viewaccount():
+# @app.route("/viewaccount" , methods=["GET", "POST"])
+# def viewaccount():
+#     if 'user' not in session:
+#         return redirect(url_for('login'))        
+#     if session['usert']=="executive" or session['usert']=="teller" or session['usert']=="cashier":
+#         if request.method == "POST":
+#             acc_id = request.form.get("acc_id")
+#             cust_id = request.form.get("cust_id")
+#             sql_query = text("SELECT * from accounts WHERE cust_id = :c or acc_id = :d")
+#             data = db.execute(sql_query, {"c": cust_id, "d": acc_id}).fetchall()
+#             if data:
+#                 return render_template('storeshop.html', viewaccount=True, data=data)
+            
+#             flash("Account not found! Please,Check you input.", 'danger')
+#     else:
+#         flash("You don't have access to this page","warning")
+#         return redirect(url_for('dashboard'))
+#     return render_template('storeshop.html', viewaccount=True)
+
+@app.route("/storeshop" , methods=["GET", "POST"])
+def storeshop():
     if 'user' not in session:
         return redirect(url_for('login'))        
     if session['usert']=="executive" or session['usert']=="teller" or session['usert']=="cashier":
@@ -276,13 +297,13 @@ def viewaccount():
             sql_query = text("SELECT * from accounts WHERE cust_id = :c or acc_id = :d")
             data = db.execute(sql_query, {"c": cust_id, "d": acc_id}).fetchall()
             if data:
-                return render_template('viewaccount.html', viewaccount=True, data=data)
+                return render_template('storeshop.html', storeshop=True, data=data)
             
             flash("Account not found! Please,Check you input.", 'danger')
     else:
         flash("You don't have access to this page","warning")
         return redirect(url_for('dashboard'))
-    return render_template('viewaccount.html', viewaccount=True)
+    return render_template('storeshop.html', storeshop=True)
 
 
 @app.route("/viewaccountstatus" , methods=["GET", "POST"])
@@ -312,7 +333,7 @@ def deposit(acc_id=None):
         return redirect(url_for('dashboard'))
     if session['usert']=="teller" or session['usert']=="cashier":
         if acc_id is None:
-            return redirect(url_for('viewaccount'))
+            return redirect(url_for('storeshop'))
         else:
             if request.method == "POST":
                 amount = request.form.get("amount")
@@ -350,7 +371,7 @@ def withdraw(acc_id=None):
         return redirect(url_for('dashboard'))
     if session['usert']=="teller" or session['usert']=="cashier":
         if acc_id is None:
-            return redirect(url_for('viewaccount'))
+            return redirect(url_for('storeshop'))
         else:
             if request.method == "POST":
                 amount = request.form.get("amount")
@@ -368,7 +389,7 @@ def withdraw(acc_id=None):
                         db.commit()
                     else:
                         flash(f"Account doesn't have sufficient Balance.",'success')
-                        return redirect(url_for('viewaccount'))
+                        return redirect(url_for('storeshop'))
                 else:
                     flash(f"Account not found or Deactivated.",'danger')
             else:
@@ -392,7 +413,7 @@ def transfer(cust_id=None):
         return redirect(url_for('dashboard'))
     if session['usert']=="teller" or session['usert']=="cashier":
         if cust_id is None:
-            return redirect(url_for('viewaccount'))
+            return redirect(url_for('storeshop'))
         else:
             if request.method == 'POST':
                 src_type = request.form.get("src_type")
@@ -437,7 +458,7 @@ def transfer(cust_id=None):
                     return render_template('transfer.html', deposit=True, cust_id=cust_id)
                 else:
                     flash("Data Not found or Invalid Customer ID",'danger')
-                    return redirect(url_for('viewaccount'))
+                    return redirect(url_for('storeshop'))
 
     return redirect(url_for('dashboard'))
 
@@ -498,7 +519,7 @@ def pdf_xl_statement(acc_id=None,ftype=None):
                     
                     # code for setting header
                     pdf.set_font('Times','B',16.0) 
-                    pdf.cell(page_width, 0.0, "Retail Banking", align='C')
+                    pdf.cell(page_width, 0.0, "Retail Store", align='C')
                     pdf.ln(10)
 
                     # code for Showing account id
@@ -610,6 +631,30 @@ def login():
         flash("Sorry, Username or password not match.","danger")
     return render_template("login.html", login=True)
 
+@app.route('/confirm_purchase', methods=['POST'])
+def confirm_purchase():
+    return render_template('confirm_purchase.html')
+
+@app.route('/TOTP', methods=['POST'])
+def TOTP():
+    return render_template('TOTP.html')
+
+totp = pyotp.TOTP(app.secret_key)
+
+# Generate OTP and get the time left for expiry
+@app.route('/')
+def home():
+    otp_code = totp.now()
+    time_remaining = 30 - (int(time.time()) % 30)  # Get the remaining seconds
+    return render_template('index.html', otp_code=otp_code, time_remaining=time_remaining)
+
+@app.route('/verify_totp', methods=['POST'])
+def verify_totp():
+    user_totp = request.form.get('totp_code')  # Get the code entered by the user
+    if totp.verify(user_totp):  # Verify the TOTP code
+        return "TOTP Verified Successfully"
+    else:
+        return "Invalid TOTP Code. Try Again."
 # Api
 @app.route('/api')
 @app.route('/api/v1')

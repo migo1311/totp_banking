@@ -1,6 +1,6 @@
 # Banking Application
 ### Project Overview
->Retail bank management is one of the most widely used application management functions in
+>Retail store management is one of the most widely used application management functions in
 banking and financial industry. This Project provide base functionalities to both
 bank employees and bank customers. Made it available through well-defined User Interface
 

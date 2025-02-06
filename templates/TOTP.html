@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card mx-auto col-md-6 px-0">
+        <div class="card-header text-center">
+            TOTP Verification
+        </div>
+        <div class="card-body text-center">
+            <p>Your One-Time Password (OTP): <strong>{{ otp_code }}</strong></p>
+            <p>Expires in: <strong id="timer">{{ time_remaining }}</strong> seconds</p>
+
+            <form action="{{ url_for('verify_totp') }}" method="POST">
+                <div class="form-group">
+                    <label for="totp_code">Enter TOTP Code:</label>
+                    <input type="text" class="form-control" id="totp_code" name="totp_code" required>
+                </div>
+                <button type="submit" class="btn btn-success mt-3">Verify</button>
+            </form>
+
+            <button class="btn btn-info mt-3" id="showTotp">Show TOTP</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Countdown Timer for OTP
+    let remainingTime = {{ time_remaining }};
+    const timerElement = document.getElementById('timer');
+
+    const countdown = setInterval(function() {
+        remainingTime--;
+        timerElement.innerText = remainingTime;
+
+        if (remainingTime <= 0) {
+            clearInterval(countdown);
+            timerElement.innerText = "OTP Expired";
+        }
+    }, 1000);
+
+    // Show the OTP on button click
+    document.getElementById('showTotp').onclick = function() {
+        alert("Your OTP is: {{ otp_code }}");
+    };
+</script>
+{% endblock %}

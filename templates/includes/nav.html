@@ -19,7 +19,7 @@
         <button class="subnavbtn">Account Management <i class="fa fa-caret-down"></i></button>
         <div class="subnav-content">
           <a href="{{ url_for('addaccount') }}" class="nav-link {% if addaccount %}active{% endif %}">Add Account</a>
-          <a href="{{ url_for('viewaccount') }}" class="nav-link {% if viewaccount %}active{% endif %}">View Account</a>
+          <a href="{{ url_for('storeshop') }}" class="nav-link {% if storeshop %}active{% endif %}">View Account</a>
           <a href="{{ url_for('viewaccountstatus') }}" class="nav-link {% if viewaccountstatus %}active{% endif %}">Account Status</a>
         </div>
       </div>
@@ -27,7 +27,7 @@
       <div class="subnav">
         <button class="subnavbtn">Account Management <i class="fa fa-caret-down"></i></button>
         <div class="subnav-content">
-          <a href="{{ url_for('viewaccount') }}" class="nav-link {% if viewaccount %}active{% endif %}">View Account</a>
+          <a href="{{ url_for('storeshop') }}" class="nav-link {% if storeshop %}active{% endif %}">View Account</a>
           <a href="{{ url_for('statement') }}" class="nav-link {% if statement %}active{% endif %}">Account Statement</a>
         </div>
       </div>
