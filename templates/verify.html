@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card mx-auto col-md-6 px-0">
+        <div class="card-header text-center">
+            <h5>TOTP Verification</h5>
+        </div>
+        <div class="card-body text-center">
+            <p>A verification code has been sent to the default email account.</p>
+            <form id="totpForm">
+                <div class="form-group mb-3">
+                    <label for="totp_code">Enter TOTP Code:</label>
+                    <input type="text" class="form-control" id="totp_code" name="totp_code" required>
+                </div>
+                <button type="button" class="btn btn-success mt-3" id="verifyBtn">Verify</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("verifyBtn").addEventListener("click", function() {
+        const totpCode = document.getElementById("totp_code").value;
+        
+        // Create a form data object
+        const formData = new FormData();
+        formData.append("totp_code", totpCode);
+        
+        // Send AJAX request to verify the TOTP
+        fetch("/verify", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.valid) {
+                alert("Order Confirmed! Thank you for your purchase.");
+            } else {
+                alert("Invalid TOTP code. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred during verification. Please try again.");
+        });
+    });
+</script>
+{% endblock %}

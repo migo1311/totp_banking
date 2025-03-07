@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block title %}Add Customer{% endblock %}
+
+{% block content %}
+<div class="row col-md-8 my-5">
+    <div class="card col-md-8 mx-auto px-0">
+        <div class="card-header text-center">
+            Welcome to Our Shop
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-4 text-center">
+                    <!-- <img src="item1.jpg" class="img-fluid" alt="Item 1"> -->
+                    <h5 class="mt-2">Item 1</h5>
+                    <p>Price: $10</p>
+                    <form action="{{ url_for('confirm_purchase') }}" method="POST">
+                        <button type="submit" class="btn btn-primary">Purchase</button>
+                    </form>                    
+                </div>
+                <div class="col-md-4 mb-4 text-center">
+                    <!-- <img src="item2.jpg" class="img-fluid" alt="Item 2"> -->
+                    <h5 class="mt-2">Item 2</h5>
+                    <p>Price: $15</p>
+                    <form action="{{ url_for('confirm_purchase') }}" method="POST">
+                        <button type="submit" class="btn btn-primary">Purchase</button>
+                    </form>
+                </div>
+                <div class="col-md-4 mb-4 text-center">
+                    <!-- <img src="item3.jpg" class="img-fluid" alt="Item 3"> -->
+                    <h5 class="mt-2">Item 3</h5>
+                    <p>Price: $20</p>
+                    <form action="{{ url_for('confirm_purchase') }}" method="POST">
+                        <button type="submit" class="btn btn-primary">Purchase</button>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-4 text-center">
+                    <!-- <img src="item4.jpg" class="img-fluid" alt="Item 4"> -->
+                    <h5 class="mt-2">Item 4</h5>
+                    <p>Price: $25</p>
+                    <form action="{{ url_for('confirm_purchase') }}" method="POST">
+                        <button type="submit" class="btn btn-primary">Purchase</button>
+                    </form>
+                </div>
+                <div class="col-md-4 mb-4 text-center">
+                    <!-- <img src="item5.jpg" class="img-fluid" alt="Item 5"> -->
+                    <h5 class="mt-2">Item 5</h5>
+                    <p>Price: $30</p>
+                    <form action="{{ url_for('confirm_purchase') }}" method="POST">
+                        <button type="submit" class="btn btn-primary">Purchase</button>
+                    </form>
+                </div>
+                <div class="col-md-4 mb-4 text-center">
+                    <!-- <img src="item6.jpg" class="img-fluid" alt="Item 6"> -->
+                    <h5 class="mt-2">Item 6</h5>
+                    <p>Price: $35</p>
+                    <form action="{{ url_for('confirm_purchase') }}" method="POST">
+                        <button type="submit" class="btn btn-primary">Purchase</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

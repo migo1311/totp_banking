@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card mx-auto col-md-6 px-0">
+        <div class="card-header text-center">
+            <h5>TOTP Authentication</h5>
+        </div>
+        <div class="card-body text-center">
+            <p class="mb-3">Click the button below to send a TOTP code to the default email account.</p>
+            <form action="/send-totp" method="POST">
+                <button type="submit" class="btn btn-primary">Send TOTP Code</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
